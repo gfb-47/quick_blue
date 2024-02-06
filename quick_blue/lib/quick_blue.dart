@@ -59,8 +59,10 @@ class QuickBlue {
     return Future.value(null);
   }
 
-  static Future<void> disconnect(String deviceId) =>
-      _platform.disconnect(deviceId);
+  static Future<void> disconnect(String deviceId) {
+    _platform.disconnect(deviceId);
+    return Future.value(null);
+  }
 
   static void setConnectionHandler(OnConnectionChanged? onConnectionChanged) {
     _platform.onConnectionChanged = onConnectionChanged;
