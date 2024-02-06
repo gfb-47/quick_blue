@@ -54,8 +54,8 @@ class QuickBlue {
         .map((item) => BlueScanResult.fromMap(item));
   }
 
-  static Future<void> connect(String deviceId) {
-    _platform.connect(deviceId);
+  static Future<void> connect(String deviceId) async {
+    await _platform.connect(deviceId);
     return Future.value(null);
   }
 
