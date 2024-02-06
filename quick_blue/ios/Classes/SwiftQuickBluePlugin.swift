@@ -22,15 +22,26 @@ extension CBPeripheral {
     }
   }
 
-  public func getCharacteristic(_ characteristic: String, of service: String) -> CBCharacteristic {
-    let s = self.services?.first {
-      $0.uuid.uuidStr == service || "0000\($0.uuid.uuidStr)-\(GSS_SUFFIX)" == service
+public func getCharacteristic(_ characteristic: String, of service: String) -> CBCharacteristic {
+    do {
+        let s = try self.services?.first {
+            $0.uuid.uuidStr == service || "0000\($0.uuid.uuidStr)-\(GSS_SUFFIX)" == service
+        }
+        let c = try s?.characteristics?.first {
+            $0.uuid.uuidStr == characteristic || "0000\($0.uuid.uuidStr)-\(GSS_SUFFIX)" == characteristic
+        }
+        guard let characteristic = c else {
+            throw CharacteristicNotFoundError()
+        }
+        return characteristic
+    } catch {
+        fatalError("Characteristic not found: \(error)")
     }
-    let c = s?.characteristics?.first {
-      $0.uuid.uuidStr == characteristic || "0000\($0.uuid.uuidStr)-\(GSS_SUFFIX)" == characteristic
-    }
-    return c!
-  }
+}
+
+struct CharacteristicNotFoundError: Error {
+    // Add details if needed
+}
 
   public func setNotifiable(_ bleInputProperty: String, for characteristic: String, of service: String) {
     setNotifyValue(bleInputProperty != "disabled", for: getCharacteristic(characteristic, of: service))
